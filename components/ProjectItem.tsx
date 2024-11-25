@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
-import { IProjectItem } from "@/app/lib/data";
+import { IProjectItem } from "@/lib/data";
 
 const ProjectItem = ({ title, description, tags, imageUrl }: IProjectItem) => {
   const ref = useRef<HTMLDivElement>(null);
