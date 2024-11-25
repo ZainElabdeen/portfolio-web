@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/header";
 import ActiveSectionProvider from "@/providers/active-section-provider";
+import ThemeProvider from "@/providers/theme-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,10 +37,12 @@ export default function RootLayout({
         <div className="bg-[#FBE2E3] absolute top-[-6rem] right-[11rem] h-[31.25rem] w-[31.25rem] -z-10 rounded-full filter blur-[10rem] sm:w-[68.75rem]"></div>
         <div className="bg-[#DBD7FB] absolute top-[-1rem] -z-10 left-[-35rem] h-[31.25rem] w-[50rem] rounded-full blur-[10rem] sm:w-[68.75rem] md:left-[-33rem] lg:left-[-28rem] xl:left-[-15rem] 2xl:left-[-5rem] dark:bg-[#676394]"></div>
 
-        <ActiveSectionProvider>
-          <Header />
-          {children}
-        </ActiveSectionProvider>
+        <ThemeProvider>
+          <ActiveSectionProvider>
+            <Header />
+            {children}
+          </ActiveSectionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
