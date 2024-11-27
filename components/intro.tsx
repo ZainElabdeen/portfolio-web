@@ -1,13 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { useSectionInView } from "@/hooks/use-sectionIn-view";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { BsArrowRight, BsLinkedin } from "react-icons/bs";
 import { FaGithubSquare } from "react-icons/fa";
 import { HiDownload } from "react-icons/hi";
+
+import { useSectionInView } from "@/hooks/use-sectionIn-view";
 
 const Intro = () => {
   const { ref } = useSectionInView("Home", 0.5);
@@ -36,7 +37,7 @@ const Intro = () => {
             />
           </motion.div>
 
-          <motion.span
+          {/* <motion.span
             className="absolute bottom-0 right-0 text-4xl"
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -48,7 +49,7 @@ const Intro = () => {
             }}
           >
             👋
-          </motion.span>
+          </motion.span> */}
         </div>
       </div>
 
