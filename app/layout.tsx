@@ -5,6 +5,8 @@ import "./globals.css";
 import Header from "@/components/header";
 import ActiveSectionProvider from "@/providers/active-section-provider";
 import ThemeProvider from "@/providers/theme-provider";
+import Footer from "@/components/footer";
+import ThemeControl from "@/components/theme-control";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,6 +43,8 @@ export default function RootLayout({
           <ActiveSectionProvider>
             <Header />
             {children}
+            <Footer />
+            <ThemeControl />
           </ActiveSectionProvider>
         </ThemeProvider>
       </body>

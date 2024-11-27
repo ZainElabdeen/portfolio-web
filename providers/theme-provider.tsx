@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, createContext, useContext } from "react";
 
+import { getItem, setItem } from "@/lib/local-storage";
+
 type Theme = "light" | "dark";
 
 type ThemeProviderProps = {
@@ -13,7 +15,7 @@ type ThemeType = {
   toggleTheme: () => void;
 };
 
-const Theme = createContext<ThemeType | null>(null);
+const ThemeContext = createContext<ThemeType | null>(null);
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>("light");
@@ -21,17 +23,17 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
   const toggleTheme = () => {
     if (theme === "light") {
       setTheme("dark");
-      window.localStorage.setItem("theme", "dark");
+      setItem("theme", "dark");
       document.documentElement.classList.add("dark");
     } else {
       setTheme("light");
-      window.localStorage.setItem("theme", "light");
+      setItem("theme", "light");
       document.documentElement.classList.remove("dark");
     }
   };
 
   useEffect(() => {
-    const localTheme = window.localStorage.getItem("theme") as Theme | null;
+    const localTheme = getItem<string>("theme") as Theme | null;
 
     if (localTheme) {
       setTheme(localTheme);
@@ -46,19 +48,19 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
   }, []);
 
   return (
-    <Theme.Provider
+    <ThemeContext.Provider
       value={{
         theme,
         toggleTheme,
       }}
     >
       {children}
-    </Theme.Provider>
+    </ThemeContext.Provider>
   );
 }
 
 export function useTheme() {
-  const context = useContext(Theme);
+  const context = useContext(ThemeContext);
 
   if (context === null) {
     throw new Error("useTheme must be used within a ThemeProvider");
