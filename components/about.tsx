@@ -24,8 +24,7 @@ const About = () => {
         with over 5 years of experience in front-end and back-end development. I
         specialize in creating dynamic web applications using modern frameworks
         like <span className="font-medium">React, NestJS, and GraphQL</span>. My
-        expertise also extends to technologies such as Docker, Kubernetes, and
-        AWS.
+        expertise also extends to technologies such as Docker and Kubernetes.
       </p>
 
       <p className="mb-3">
@@ -42,17 +41,16 @@ const About = () => {
         I hold a B.Sc. (Honours) in Computer Engineering from the
         <span className="font-medium"> University of Gezira</span>. My career
         journey has taken me from being a{" "}
-        <span className="font-medium">Teaching Assistant</span>
-        to a <span className="font-medium">System Administrator</span>, and now
-        to a Full Stack Developer, honing skills in diverse environments.
+        <span className="font-medium">Teaching Assistant</span> to a{" "}
+        <span className="font-medium">System Administrator</span>, and now to a
+        Full Stack Developer, honing skills in diverse environments.
       </p>
 
       <p>
         <span className="italic">Outside of coding</span>, I enjoy staying
-        current with new technologies, playing video games, and exploring the
-        world of
-        <span className="font-medium"> network security</span>. I'm always eager
-        to learn and recently completed certifications in{" "}
+        current with new technologies, playing football, and exploring the world
+        of <span className="font-medium">DevOps</span>. I'm always eager to
+        learn and recently completed certifications in{" "}
         <span className="font-medium">
           Mobile App Development, Node.js Unit Testing
         </span>

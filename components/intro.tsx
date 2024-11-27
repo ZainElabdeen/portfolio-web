@@ -61,12 +61,13 @@ const Intro = () => {
         <span className="font-bold">Hello, I'm Zainelabdeen.</span> I'm a{" "}
         <span className="font-bold">Full Stack Engineer</span> with over{" "}
         <span className="font-bold">6 years</span> of experience. I specialize
-        in <span className="italic">React.js, Node.js</span>, and cloud
-        technologies like <span className="underline">AWS</span>. Passionate
-        about building user-friendly interfaces,{" "}
-        <span className="font-bold">clean code</span>, and effective
-        collaboration. I hold a{" "}
-        <span className="underline">B.Sc. in Computer Engineering</span>.
+        in <span className="italic">React.js, Node.js</span>, and modern backend
+        technologies such as <span className="underline">NestJS</span> and{" "}
+        <span className="underline">GraphQL</span>. Passionate about building
+        user-friendly interfaces, <span className="font-bold">clean code</span>,
+        and effective collaboration. I hold a{" "}
+        <span className="underline">B.Sc. in Computer Engineering</span> from
+        the <span className="underline">University of Gezira</span>.
       </motion.h1>
 
       <motion.div

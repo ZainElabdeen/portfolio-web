@@ -13,7 +13,7 @@ import { useSectionInView } from "@/hooks/use-sectionIn-view";
 import { useTheme } from "@/providers/theme-provider";
 
 const Experience = () => {
-  const { ref } = useSectionInView("Experience");
+  const { ref } = useSectionInView("Experience", 0.5);
   const { theme } = useTheme();
 
   return (
