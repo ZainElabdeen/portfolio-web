@@ -51,7 +51,7 @@ export const experiencesData = [
     description:
       "Developed dynamic dashboards and backend systems for ride-sharing platforms. Utilized React, Apollo GraphQL, NestJS, and PostgreSQL to deliver high-performance and scalable solutions.",
     icon: React.createElement(FaReact),
-    date: "March 2022 - October 2024",
+    date: "Mar 2022 - Oct 2024",
   },
   {
     title: "Full Stack Engineer at Musafer Information Technology Co. Ltd.",
@@ -59,7 +59,7 @@ export const experiencesData = [
     description:
       "Designed a customer-facing dashboard with React SPA, state management via Redux, and internationalization support. Developed a scalable server-side application using NestJS and GraphQL.",
     icon: React.createElement(FaReact),
-    date: "October 2019 - March 2022",
+    date: "Oct 2019 - Mar 2022",
   },
   {
     title: "Full Stack Developer at Nano Technology Co. Ltd.",
@@ -67,7 +67,7 @@ export const experiencesData = [
     description:
       "Built and maintained responsive dashboards using React, Redux, and Semantic UI. Developed scalable RESTful APIs with Node.js and Express.js, integrating real-time communication with Socket.io.",
     icon: React.createElement(FaReact),
-    date: "April 2018 - October 2019",
+    date: "Apr 2018 - Oct 2019",
   },
   {
     title: "System Administrator",
@@ -75,7 +75,7 @@ export const experiencesData = [
     description:
       "Managed servers (Web, DNS, Zimbra Mail, Bacula Backup) and firewalls, including FreeBSD and CentOS environments.",
     icon: React.createElement(CgWorkAlt),
-    date: "March 2017 - April 2018",
+    date: "Mar 2017 - Apr 2018",
   },
   {
     title: "Teaching Assistant",
@@ -83,7 +83,7 @@ export const experiencesData = [
     description:
       "Supported students in courses like Data Communications, Networking, and Image Processing. Designed individual education programs to monitor progress.",
     icon: React.createElement(CgWorkAlt),
-    date: "February 2013 - November 2015",
+    date: "Feb 2013 - Nov 2015",
   },
   {
     title: "Graduated from University of Gezira",
@@ -91,7 +91,7 @@ export const experiencesData = [
     description:
       "Earned a B.Sc. (Honours) in Computer Engineering Technology, building a strong foundation in engineering and programming.",
     icon: React.createElement(LuGraduationCap),
-    date: "December 2012",
+    date: "Dec 2012",
   },
 ] as const;
 
