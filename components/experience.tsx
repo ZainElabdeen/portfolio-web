@@ -45,29 +45,28 @@ const Experience = () => {
               }}
               custom={index}
             >
-              {/* Icon */}
-              <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 bg-white dark:bg-gray-700 text-slate-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                <div className="text-2xl text-gray-500 dark:text-white/75">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 bg-white dark:bg-gray-700 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                <div className="text-2xl" aria-hidden="true">
                   {item.icon}
                 </div>
               </div>
 
-              {/* Card */}
-              <div className="flex flex-col w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-slate-200 shadow text-gray-700 dark:text-white/80">
+              <div className="flex flex-col w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded border border-slate-200 shadow">
                 <div className="flex items-start justify-between space-x-2 mb-1">
                   <div>
                     <h3 className="font-semibold capitalize">{item.title}</h3>
                     <p className="font-normal">{item.location}</p>
                   </div>
-
-                  <time className="hidden md:block text-sm font-sm font-semibold">
-                    {item.date}
-                  </time>
                 </div>
                 <p>{item.description}</p>
+
                 <time className="block md:hidden font-medium text-xs my-2">
                   {item.date}
                 </time>
+              </div>
+
+              <div className="order-1 hidden md:block text-sm font-semibold px-8">
+                <time>{item.date}</time>
               </div>
             </motion.div>
           </React.Fragment>
