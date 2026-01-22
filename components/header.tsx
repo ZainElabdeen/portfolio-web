@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+// import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 import { links } from "@/lib/data";
 import { useActiveSection } from "@/providers/active-section-provider";
@@ -58,14 +58,14 @@ const Header = () => {
               </Link>
             </motion.li>
           ))}
-          <SignedOut>
+          {/* <SignedOut>
             <SignInButton mode="modal">
               <button>Login</button>
             </SignInButton>
           </SignedOut>
           <SignedIn>
             <UserButton />
-          </SignedIn>
+          </SignedIn> */}
         </ul>
       </nav>
     </header>

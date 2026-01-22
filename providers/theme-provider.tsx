@@ -33,6 +33,9 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
   };
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return; // Avoid running in SSR
+    }
     const localTheme = getItem<string>("theme") as Theme | null;
 
     if (localTheme) {

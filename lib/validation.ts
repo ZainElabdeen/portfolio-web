@@ -16,18 +16,16 @@ export const experienceSchema = z.object({
 export type TExperience = z.infer<typeof experienceSchema>;
 
 export const skillSchema = z.object({
-  name: z.string(),
+  title: z.string(),
   order: z.number().optional(),
 });
 
 export const skillsArraySchema = z.array(skillSchema);
 
+export type TSkill = z.infer<typeof skillSchema>;
+
 export const projectSchema = z.object({
-  title: z
-    .string({
-      required_error: "Title is required",
-    })
-    .min(1, "Title is required"),
+  title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   tags: z.array(z.string().min(1, "Tag cannot be empty")),
   imageUrl: z.string(),
