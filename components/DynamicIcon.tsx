@@ -5,12 +5,14 @@ interface IconProps {
   name?: string;
   size?: number;
   color?: string;
+  className?: string;
 }
 
 const DynamicIcon: React.FC<IconProps> = ({
   name = "FaReact",
   size = 24,
-  color = "black",
+  color,
+  className,
 }) => {
   const IconComponent = Icons[name as keyof typeof Icons];
 
@@ -18,7 +20,7 @@ const DynamicIcon: React.FC<IconProps> = ({
     return <span>Icon not found</span>;
   }
 
-  return <IconComponent size={size} color={color} />;
+  return <IconComponent size={size} color={color} className={className} />;
 };
 
 export default DynamicIcon;

@@ -9,11 +9,13 @@ import Skills from "@/components/skills";
 import ActiveSectionProvider from "@/providers/active-section-provider";
 import { getProjects } from "@/actions/project.action";
 import { getSkills } from "@/actions/skill.action";
+import { getExperiences } from "@/actions/experience.action";
 
 export default async function Home() {
-  const [dbProjects, dbSkills] = await Promise.all([
+  const [dbProjects, dbSkills, dbExperiences] = await Promise.all([
     getProjects(),
     getSkills(),
+    getExperiences(),
   ]);
 
   const projects = dbProjects.length > 0 ? dbProjects : [];
@@ -28,7 +30,7 @@ export default async function Home() {
         <About />
         <Projects projects={projects} />
         <Skills skills={skills} />
-        <Experience />
+        <Experience experiences={dbExperiences} />
         <Footer />
       </main>
     </ActiveSectionProvider>
