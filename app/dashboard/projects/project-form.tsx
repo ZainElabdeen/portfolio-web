@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,6 +22,32 @@ import { createProject, updateProject } from "@/actions/project.action";
 
 type TProject = z.infer<typeof projectSchema>;
 
+interface TagsInputProps {
+  initialValue: string;
+  onChange: (tags: string[]) => void;
+}
+
+const TagsInput = ({ initialValue, onChange }: TagsInputProps) => {
+  const [inputValue, setInputValue] = useState(initialValue);
+
+  return (
+    <Input
+      placeholder="React, TypeScript, Next.js"
+      value={inputValue}
+      onChange={(e) => {
+        setInputValue(e.target.value);
+      }}
+      onBlur={() => {
+        const tags = inputValue
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean);
+        onChange(tags);
+      }}
+    />
+  );
+};
+
 export interface ProjectData extends TProject {
   id: string;
 }
@@ -37,10 +63,10 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
   const form = useForm<TProject>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      tags: [],
-      imageUrl: "",
+      title: editProject?.title || "",
+      description: editProject?.description || "",
+      tags: editProject?.tags || [],
+      imageUrl: editProject?.imageUrl || "",
     },
   });
 
@@ -134,16 +160,14 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
             <FormItem>
               <FormLabel>Tags (comma separated)</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="React, TypeScript, Next.js"
-                  value={field.value?.join(", ") || ""}
-                  onChange={(e) => {
-                    const tags = e.target.value
-                      .split(",")
-                      .map((tag) => tag.trim())
-                      .filter(Boolean);
-                    field.onChange(tags);
-                  }}
+                <TagsInput
+                  key={editProject?.id || "new"}
+                  initialValue={
+                    editProject?.tags?.join(", ") ||
+                    field.value?.join(", ") ||
+                    ""
+                  }
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />

@@ -8,11 +8,10 @@ import SectionDivider from "@/components/section-divider";
 import Skills from "@/components/skills";
 import ActiveSectionProvider from "@/providers/active-section-provider";
 import { getProjects } from "@/actions/project.action";
-import { projectsData } from "@/lib/data"; // Fallback static data
 
 export default async function Home() {
   const dbProjects = await getProjects();
-  const projects = dbProjects.length > 0 ? dbProjects : projectsData;
+  const projects = dbProjects.length > 0 ? dbProjects : [];
 
   return (
     <ActiveSectionProvider>

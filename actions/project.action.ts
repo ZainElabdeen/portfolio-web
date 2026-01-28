@@ -9,7 +9,7 @@ export const getProjects = async () => {
       orderBy: {
         // You might want to add an 'order' field or sort by date if available
         // For now, no specific order or by creation default
-        id: 'desc' 
+        id: "desc",
       },
     });
     return projects;
@@ -20,40 +20,40 @@ export const getProjects = async () => {
 };
 
 export const createProject = async (data: any) => {
-    // Add auth check here if needed
-    try {
-        await prisma.project.create({ data });
-        revalidatePath("/");
-        revalidatePath("/dashboard/projects");
-        return { success: true };
-    } catch (error) {
-        return { success: false, error };
-    }
-}
+  // Add auth check here if needed
+  try {
+    await prisma.project.create({ data });
+    revalidatePath("/");
+    revalidatePath("/dashboard/projects");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+};
 
 export const updateProject = async (id: string, data: any) => {
-    try {
-        await prisma.project.update({
-            where: { id },
-            data,
-        });
-        revalidatePath("/");
-        revalidatePath("/dashboard/projects");
-        return { success: true };
-    } catch (error) {
-        return { success: false, error };
-    }
-}
+  try {
+    await prisma.project.update({
+      where: { id },
+      data,
+    });
+    revalidatePath("/");
+    revalidatePath("/dashboard/projects");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+};
 
 export const deleteProject = async (id: string) => {
-    try {
-        await prisma.project.delete({
-            where: { id },
-        });
-        revalidatePath("/");
-        revalidatePath("/dashboard/projects");
-        return { success: true };
-    } catch (error) {
-        return { success: false, error };
-    }
-}
+  try {
+    await prisma.project.delete({
+      where: { id },
+    });
+    revalidatePath("/");
+    revalidatePath("/dashboard/projects");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error };
+  }
+};
