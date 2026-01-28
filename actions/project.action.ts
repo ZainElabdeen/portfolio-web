@@ -2,13 +2,19 @@
 
 import prisma from "@/prisma/client";
 import { revalidatePath } from "next/cache";
+import { projectSchema } from "@/lib/validation";
+import { z } from "zod";
+
+type ProjectInput = z.infer<typeof projectSchema>;
+
+type ActionResult =
+  | { success: true }
+  | { success: false; error: string };
 
 export const getProjects = async () => {
   try {
     const projects = await prisma.project.findMany({
       orderBy: {
-        // You might want to add an 'order' field or sort by date if available
-        // For now, no specific order or by creation default
         id: "desc",
       },
     });
@@ -19,33 +25,44 @@ export const getProjects = async () => {
   }
 };
 
-export const createProject = async (data: any) => {
-  // Add auth check here if needed
+export const createProject = async (data: ProjectInput): Promise<ActionResult> => {
+  const parsed = projectSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.message };
+  }
+
   try {
-    await prisma.project.create({ data });
+    await prisma.project.create({ data: parsed.data });
     revalidatePath("/");
     revalidatePath("/dashboard/projects");
     return { success: true };
   } catch (error) {
-    return { success: false, error };
+    const message = error instanceof Error ? error.message : "Failed to create project";
+    return { success: false, error: message };
   }
 };
 
-export const updateProject = async (id: string, data: any) => {
+export const updateProject = async (id: string, data: ProjectInput): Promise<ActionResult> => {
+  const parsed = projectSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.message };
+  }
+
   try {
     await prisma.project.update({
       where: { id },
-      data,
+      data: parsed.data,
     });
     revalidatePath("/");
     revalidatePath("/dashboard/projects");
     return { success: true };
   } catch (error) {
-    return { success: false, error };
+    const message = error instanceof Error ? error.message : "Failed to update project";
+    return { success: false, error: message };
   }
 };
 
-export const deleteProject = async (id: string) => {
+export const deleteProject = async (id: string): Promise<ActionResult> => {
   try {
     await prisma.project.delete({
       where: { id },
@@ -54,6 +71,7 @@ export const deleteProject = async (id: string) => {
     revalidatePath("/dashboard/projects");
     return { success: true };
   } catch (error) {
-    return { success: false, error };
+    const message = error instanceof Error ? error.message : "Failed to delete project";
+    return { success: false, error: message };
   }
 };
