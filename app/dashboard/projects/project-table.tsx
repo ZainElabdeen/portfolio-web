@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, FolderKanban } from "lucide-react";
 import ProjectForm, { ProjectData } from "./project-form";
 import { deleteProject } from "@/actions/project.action";
 
@@ -58,75 +58,94 @@ export default function ProjectTable({ projects }: ProjectTableProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
+        <p className="text-muted-foreground">
+          Manage your portfolio projects and showcase your work.
+        </p>
+      </div>
+
       <ProjectForm
         editProject={editingProject}
         onCancelEdit={handleCancelEdit}
       />
 
-      <Table>
-        <TableCaption>A list of your recent Projects.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-20">Image</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Tags</TableHead>
-            <TableHead className="w-24">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {projects.map((project) => (
-            <TableRow key={project.id}>
-              <TableCell>
-                {isValidImageUrl(project.imageUrl) ? (
-                  <div className="relative w-16 h-12 rounded overflow-hidden">
-                    <Image
-                      src={project.imageUrl}
-                      alt={project.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <span className="text-xs text-muted-foreground">
-                    {project.imageUrl || "No image"}
-                  </span>
-                )}
-              </TableCell>
-              <TableCell className="font-medium">{project.title}</TableCell>
-              <TableCell className="max-w-xs truncate">
-                {project.description}
-              </TableCell>
-              <TableCell>
-                {project.tags.map((tag, i) => (
-                  <Badge key={i} variant="outline" className="mx-1">
-                    {tag}
-                  </Badge>
-                ))}
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(project)}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(project.id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-              </TableCell>
+      {projects.length > 0 ? (
+        <Table>
+          <TableCaption>A list of your projects.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-20">Image</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Tags</TableHead>
+              <TableHead className="w-24">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {projects.map((project) => (
+              <TableRow key={project.id}>
+                <TableCell>
+                  {isValidImageUrl(project.imageUrl) ? (
+                    <div className="relative w-16 h-12 rounded overflow-hidden">
+                      <Image
+                        src={project.imageUrl}
+                        alt={project.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">
+                      {project.imageUrl || "No image"}
+                    </span>
+                  )}
+                </TableCell>
+                <TableCell className="font-medium">{project.title}</TableCell>
+                <TableCell className="max-w-xs truncate">
+                  {project.description}
+                </TableCell>
+                <TableCell>
+                  {project.tags.map((tag, i) => (
+                    <Badge key={i} variant="outline" className="mx-1">
+                      {tag}
+                    </Badge>
+                  ))}
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(project)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(project.id)}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <div className="flex min-h-[400px] flex-col items-center justify-center rounded-md border border-dashed p-8 text-center animate-in fade-in-50">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <FolderKanban className="h-6 w-6 text-primary" />
+          </div>
+          <h3 className="mt-4 text-lg font-semibold">No projects yet</h3>
+          <p className="mb-4 mt-2 text-sm text-muted-foreground">
+            Add your first project using the form above.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
