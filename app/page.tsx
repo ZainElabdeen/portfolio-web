@@ -8,10 +8,16 @@ import SectionDivider from "@/components/section-divider";
 import Skills from "@/components/skills";
 import ActiveSectionProvider from "@/providers/active-section-provider";
 import { getProjects } from "@/actions/project.action";
+import { getSkills } from "@/actions/skill.action";
 
 export default async function Home() {
-  const dbProjects = await getProjects();
+  const [dbProjects, dbSkills] = await Promise.all([
+    getProjects(),
+    getSkills(),
+  ]);
+
   const projects = dbProjects.length > 0 ? dbProjects : [];
+  const skills = dbSkills.map((s) => s.title);
 
   return (
     <ActiveSectionProvider>
@@ -21,7 +27,7 @@ export default async function Home() {
         <SectionDivider />
         <About />
         <Projects projects={projects} />
-        <Skills />
+        <Skills skills={skills} />
         <Experience />
         <Footer />
       </main>

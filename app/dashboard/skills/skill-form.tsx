@@ -1,63 +1,86 @@
 "use client";
 
-import React from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { skillSchema, TSkill } from "@/lib/validation";
-import { createSkill } from "@/actions/skill.action";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { createSkill, createSkillsBulk } from "@/actions/skill.action";
 
 const SkillForm = () => {
-  const form = useForm<TSkill>({
-    resolver: zodResolver(skillSchema),
-    defaultValues: {
-      title: "",
-    },
-  });
+  const [singleSkill, setSingleSkill] = useState("");
+  const [bulkSkills, setBulkSkills] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function onSubmit(values: TSkill) {
-    await createSkill(values);
-  }
+  const handleSingleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!singleSkill.trim()) return;
+
+    setIsSubmitting(true);
+    await createSkill({ title: singleSkill.trim() });
+    setSingleSkill("");
+    setIsSubmitting(false);
+  };
+
+  const handleBulkSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bulkSkills.trim()) return;
+
+    setIsSubmitting(true);
+    // Split by comma or newline, trim, and filter empty
+    const skills = bulkSkills
+      .split(/[,\n]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    if (skills.length > 0) {
+      await createSkillsBulk(skills);
+      setBulkSkills("");
+    }
+    setIsSubmitting(false);
+  };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex gap-3 items-center w-full"
-      >
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem className="flex-grow">
-              <FormControl>
-                <Input
-                  placeholder="Add a skill"
-                  className="min-w-full border border-gray-300 rounded-lg px-4 py-2 text-sm shadow-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          className="px-6 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary-dark"
-        >
-          Add
-        </Button>
-      </form>
-    </Form>
+    <Tabs defaultValue="single" className="w-full">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="single">Single</TabsTrigger>
+        <TabsTrigger value="bulk">Bulk</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="single">
+        <form onSubmit={handleSingleSubmit} className="flex gap-3 items-center">
+          <Input
+            placeholder="Add a skill (e.g., React)"
+            value={singleSkill}
+            onChange={(e) => setSingleSkill(e.target.value)}
+            className="flex-grow"
+            disabled={isSubmitting}
+          />
+          <Button type="submit" disabled={isSubmitting || !singleSkill.trim()}>
+            Add
+          </Button>
+        </form>
+      </TabsContent>
+
+      <TabsContent value="bulk">
+        <form onSubmit={handleBulkSubmit} className="flex flex-col gap-3">
+          <Textarea
+            placeholder="Add multiple skills separated by commas or new lines:&#10;React, TypeScript, Node.js&#10;or&#10;React&#10;TypeScript&#10;Node.js"
+            value={bulkSkills}
+            onChange={(e) => setBulkSkills(e.target.value)}
+            rows={4}
+            disabled={isSubmitting}
+          />
+          <Button
+            type="submit"
+            disabled={isSubmitting || !bulkSkills.trim()}
+            className="w-fit"
+          >
+            Add All
+          </Button>
+        </form>
+      </TabsContent>
+    </Tabs>
   );
 };
 

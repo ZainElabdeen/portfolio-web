@@ -12,8 +12,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Image from "next/image";
-import { Pencil, Trash2, FolderKanban } from "lucide-react";
+import { Pencil, Trash2, FolderKanban, Loader2 } from "lucide-react";
 import ProjectForm, { ProjectData } from "./project-form";
 import { deleteProject } from "@/actions/project.action";
 
@@ -42,6 +53,7 @@ export default function ProjectTable({ projects }: ProjectTableProps) {
   const [editingProject, setEditingProject] = useState<ProjectData | null>(
     null
   );
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleEdit = (project: Project) => {
     setEditingProject(project);
@@ -52,9 +64,9 @@ export default function ProjectTable({ projects }: ProjectTableProps) {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this project?")) {
-      await deleteProject(id);
-    }
+    setDeletingId(id);
+    await deleteProject(id);
+    setDeletingId(null);
   };
 
   return (
@@ -122,13 +134,39 @@ export default function ProjectTable({ projects }: ProjectTableProps) {
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDelete(project.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Project</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete &quot;{project.title}
+                            &quot;? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDelete(project.id)}
+                            disabled={deletingId === project.id}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            {deletingId === project.id ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Deleting...
+                              </>
+                            ) : (
+                              "Delete"
+                            )}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>
