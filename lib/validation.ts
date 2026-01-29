@@ -21,7 +21,7 @@ export const experienceSchema = z.object({
     .refine((date) => !date || !isNaN(Date.parse(date)), {
       message: "Invalid end date",
     }),
-  current: z.boolean().default(false),
+  current: z.boolean(),
   order: z.number().optional(),
 });
 
@@ -63,7 +63,7 @@ export const educationSchema = z.object({
     .refine((date) => !date || !isNaN(Date.parse(date)), {
       message: "Invalid end date",
     }),
-  current: z.boolean().default(false),
+  current: z.boolean(),
   description: z.string().optional(),
   order: z.number().optional(),
 });

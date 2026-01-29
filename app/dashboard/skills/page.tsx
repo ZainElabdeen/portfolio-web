@@ -13,7 +13,7 @@ const SkillsPage = async () => {
     console.error("Failed to fetch skills:", e);
     error = "Failed to load skills. Please check your database connection.";
   }
-  console.log("skills", skills);
+
   return (
     <div className="space-y-6">
       <div>
