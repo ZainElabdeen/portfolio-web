@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import {
   Select,
   SelectContent,
@@ -264,10 +264,10 @@ const ExperienceForm = ({
             <FormItem>
               <FormLabel>Description *</FormLabel>
               <FormControl>
-                <Textarea
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
                   placeholder="Describe your role and responsibilities..."
-                  rows={3}
-                  {...field}
                 />
               </FormControl>
               <FormMessage />

@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import SectionHeading from "./section-heading";
 import DynamicIcon from "./DynamicIcon";
 import { useSectionInView } from "@/hooks/use-sectionIn-view";
+import { RichTextViewer } from "@/components/ui/rich-text-viewer";
 
 const fadeInAnimationVariants = {
   initial: {
@@ -116,9 +117,10 @@ const Experience = ({ experiences }: ExperienceProps) => {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
-                  {item.description}
-                </p>
+                <RichTextViewer
+                  content={item.description}
+                  className="text-sm text-gray-600 dark:text-gray-300 mt-2"
+                />
 
                 <time className="block md:hidden font-medium text-xs mt-3 text-muted-foreground">
                   {formatDateRange(item.startDate, item.endDate, item.current)}

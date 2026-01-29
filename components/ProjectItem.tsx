@@ -3,8 +3,8 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-
 import type { StaticImageData } from "next/image";
+import { RichTextViewer } from "@/components/ui/rich-text-viewer";
 
 // Enhanced type for ProjectItem props
 export interface ProjectItemProps {
@@ -77,9 +77,10 @@ const ProjectItem = ({
               title
             )}
           </h3>
-          <p className="mt-2 leading-relaxed text-gray-700 dark:text-white/70">
-            {description}
-          </p>
+          <RichTextViewer
+            content={description}
+            className="mt-2 leading-relaxed text-gray-700 dark:text-white/70"
+          />
           <ul className="flex flex-wrap mt-4 gap-2 sm:mt-auto">
             {tags.map((tag, index) => (
               <li

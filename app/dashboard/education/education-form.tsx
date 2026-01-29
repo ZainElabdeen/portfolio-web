@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { educationSchema, TEducation } from "@/lib/validation";
 import { createEducation, updateEducation } from "@/actions/education.action";
 import { Loader2 } from "lucide-react";
@@ -150,10 +150,10 @@ const EducationForm = ({ editEducation, onCancelEdit }: EducationFormProps) => {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea
+                <RichTextEditor
+                  value={field.value || ""}
+                  onChange={field.onChange}
                   placeholder="Describe your studies, achievements, etc..."
-                  rows={3}
-                  {...field}
                 />
               </FormControl>
               <FormMessage />

@@ -7,6 +7,7 @@ import { GraduationCap, Calendar, MapPin } from "lucide-react";
 
 import SectionHeading from "./section-heading";
 import { useSectionInView } from "@/hooks/use-sectionIn-view";
+import { RichTextViewer } from "@/components/ui/rich-text-viewer";
 
 const fadeInAnimationVariants = {
   initial: {
@@ -106,9 +107,10 @@ const Education = ({ educations }: EducationProps) => {
                   </div>
 
                   {item.description && (
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-3 leading-relaxed">
-                      {item.description}
-                    </p>
+                    <RichTextViewer
+                      content={item.description}
+                      className="text-sm text-gray-600 dark:text-gray-300 mt-3 leading-relaxed"
+                    />
                   )}
                 </div>
               </div>
