@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -31,11 +32,16 @@ import { deleteExperience } from "@/actions/experience.action";
 interface Experience {
   id: string;
   title: string;
-  location: string;
+  companyName: string | null;
+  location: string | null;
+  locationType: string | null;
+  employmentType: string | null;
   description: string;
   startDate: Date;
-  endDate: Date;
+  endDate: Date | null;
+  current: boolean;
   icon: string | null;
+  companyLogoUrl: string | null;
 }
 
 interface ExperienceTableProps {
@@ -51,11 +57,28 @@ export default function ExperienceTable({ experiences }: ExperienceTableProps) {
     setEditingExperience({
       id: experience.id,
       title: experience.title,
-      location: experience.location,
+      companyName: experience.companyName || undefined,
+      location: experience.location || undefined,
+      locationType: experience.locationType as
+        | "Remote"
+        | "Onsite"
+        | "Hybrid"
+        | undefined,
+      employmentType: experience.employmentType as
+        | "Full-time"
+        | "Part-time"
+        | "Contract"
+        | "Intern"
+        | "Freelance"
+        | undefined,
       description: experience.description,
       startDate: format(new Date(experience.startDate), "yyyy-MM-dd"),
-      endDate: format(new Date(experience.endDate), "yyyy-MM-dd"),
+      endDate: experience.endDate
+        ? format(new Date(experience.endDate), "yyyy-MM-dd")
+        : undefined,
+      current: experience.current,
       icon: experience.icon || undefined,
+      companyLogoUrl: experience.companyLogoUrl || undefined,
     });
   };
 
@@ -67,6 +90,17 @@ export default function ExperienceTable({ experiences }: ExperienceTableProps) {
     setDeletingId(id);
     await deleteExperience(id);
     setDeletingId(null);
+  };
+
+  const formatPeriod = (
+    startDate: Date,
+    endDate: Date | null,
+    current: boolean
+  ) => {
+    const start = format(new Date(startDate), "MMM yyyy");
+    if (current) return `${start} - Present`;
+    if (!endDate) return start;
+    return `${start} - ${format(new Date(endDate), "MMM yyyy")}`;
   };
 
   return (
@@ -89,9 +123,9 @@ export default function ExperienceTable({ experiences }: ExperienceTableProps) {
           <TableHeader>
             <TableRow>
               <TableHead className="w-12">Icon</TableHead>
-              <TableHead>Title</TableHead>
+              <TableHead>Position</TableHead>
               <TableHead>Location</TableHead>
-              <TableHead className="max-w-xs">Description</TableHead>
+              <TableHead>Type</TableHead>
               <TableHead>Period</TableHead>
               <TableHead className="w-24">Actions</TableHead>
             </TableRow>
@@ -107,14 +141,48 @@ export default function ExperienceTable({ experiences }: ExperienceTableProps) {
                     />
                   </div>
                 </TableCell>
-                <TableCell className="font-medium">{experience.title}</TableCell>
-                <TableCell>{experience.location}</TableCell>
-                <TableCell className="max-w-xs truncate">
-                  {experience.description}
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{experience.title}</span>
+                    {experience.companyName && (
+                      <span className="text-sm text-muted-foreground">
+                        {experience.companyName}
+                      </span>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-1">
+                    {experience.location && (
+                      <span className="text-sm">{experience.location}</span>
+                    )}
+                    {experience.locationType && (
+                      <Badge variant="outline" className="w-fit text-xs">
+                        {experience.locationType}
+                      </Badge>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {experience.employmentType && (
+                    <Badge variant="secondary">{experience.employmentType}</Badge>
+                  )}
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
-                  {format(new Date(experience.startDate), "MMM yyyy")} -{" "}
-                  {format(new Date(experience.endDate), "MMM yyyy")}
+                  <div className="flex flex-col">
+                    <span>
+                      {formatPeriod(
+                        experience.startDate,
+                        experience.endDate,
+                        experience.current
+                      )}
+                    </span>
+                    {experience.current && (
+                      <Badge className="w-fit mt-1" variant="default">
+                        Current
+                      </Badge>
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
@@ -136,8 +204,11 @@ export default function ExperienceTable({ experiences }: ExperienceTableProps) {
                           <AlertDialogTitle>Delete Experience</AlertDialogTitle>
                           <AlertDialogDescription>
                             Are you sure you want to delete &quot;
-                            {experience.title}&quot;? This action cannot be
-                            undone.
+                            {experience.title}
+                            {experience.companyName
+                              ? ` at ${experience.companyName}`
+                              : ""}
+                            &quot;? This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

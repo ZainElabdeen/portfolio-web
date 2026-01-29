@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 export const getExperiences = async () => {
   try {
     const experiences = await prisma.experience.findMany({
-      orderBy: { startDate: "desc" },
+      orderBy: [{ current: "desc" }, { startDate: "desc" }],
     });
     return experiences;
   } catch (error) {
@@ -25,9 +25,17 @@ export const createExperience = async (data: TExperience) => {
   try {
     await prisma.experience.create({
       data: {
-        ...parsed.data,
+        title: parsed.data.title,
+        companyName: parsed.data.companyName || null,
+        location: parsed.data.location || null,
+        locationType: parsed.data.locationType || null,
+        employmentType: parsed.data.employmentType || null,
+        description: parsed.data.description,
+        icon: parsed.data.icon || null,
+        companyLogoUrl: parsed.data.companyLogoUrl || null,
         startDate: new Date(parsed.data.startDate),
-        endDate: new Date(parsed.data.endDate),
+        endDate: parsed.data.endDate ? new Date(parsed.data.endDate) : null,
+        current: parsed.data.current || false,
       },
     });
     revalidatePath("/");
@@ -50,9 +58,17 @@ export const updateExperience = async (id: string, data: TExperience) => {
     await prisma.experience.update({
       where: { id },
       data: {
-        ...parsed.data,
+        title: parsed.data.title,
+        companyName: parsed.data.companyName || null,
+        location: parsed.data.location || null,
+        locationType: parsed.data.locationType || null,
+        employmentType: parsed.data.employmentType || null,
+        description: parsed.data.description,
+        icon: parsed.data.icon || null,
+        companyLogoUrl: parsed.data.companyLogoUrl || null,
         startDate: new Date(parsed.data.startDate),
-        endDate: new Date(parsed.data.endDate),
+        endDate: parsed.data.endDate ? new Date(parsed.data.endDate) : null,
+        current: parsed.data.current || false,
       },
     });
     revalidatePath("/");

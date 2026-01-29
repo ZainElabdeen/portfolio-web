@@ -19,77 +19,108 @@ model Project {
   title       String
   description String
   tags        String[]
-  imageUrl    String
-  
-  userProfileId String? @db.ObjectId
+
+  imageUrl  String?
+  liveUrl   String?
+  githubUrl String?
+
+  order Int?
+
+  userProfileId String?      @db.ObjectId
   userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Experience {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  location    String
-  description String
-  icon        String?
-  startDate   DateTime
-  endDate     DateTime
-  
-  userProfileId String? @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  title          String
+  companyName    String?
+  location       String?
+  locationType   String? // Remote / Onsite / Hybrid
+  employmentType String? // Full-time / Part-time / Contract / Intern
+
+  description    String
+  icon           String?
+  companyLogoUrl String?
+
+  startDate DateTime
+  endDate   DateTime?
+  current   Boolean   @default(false)
+
+  order Int?
+
+  userProfileId String?      @db.ObjectId
   userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Skill {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String @unique
   order Int?
-  
-  userProfileId String? @db.ObjectId
+
+  userProfileId String?      @db.ObjectId
   userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
-}
 
-model UserProfile {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String       @unique // Link to Clerk User ID or similar unique identifier
-  fullName       String
-  email          String
-  phone          String?
-  summary        String?
-  
-  // Relations
-  experiences    Experience[]
-  educations     Education[]
-  skills         Skill[]
-  projects       Project[]
-  resumes        Resume[]
-}
-
-model Resume {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  title          String   // e.g. "Frontend Dev 2024"
-  
-  userProfileId  String   @db.ObjectId
-  userProfile    UserProfile @relation(fields: [userProfileId], references: [id])
-  
-  // Customization
-  themeColor     String   @default("#000000")
-  layout         String   @default("modern")
-  
-  // Selected content snapshot (JSON)
-  content        Json     
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Education {
-   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-   institution  String
-   degree       String
-   startDate    DateTime
-   endDate      DateTime?
-   current      Boolean  @default(false)
-   description  String?
-   
-   userProfileId String? @db.ObjectId
-   userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  institution String
+  degree      String
+
+  startDate DateTime
+  endDate   DateTime?
+  current   Boolean   @default(false)
+
+  description String?
+  order       Int?
+
+  userProfileId String?      @db.ObjectId
+  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String  @unique
+  fullName String
+  email    String
+  phone    String?
+  summary  String?
+
+  experiences Experience[]
+  educations  Education[]
+  skills      Skill[]
+  projects    Project[]
+  resumes     Resume[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Resume {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+
+  userProfileId String      @db.ObjectId
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
+
+  themeColor String @default("#000000")
+  layout     String @default("modern")
+
+  content Json
+  version Int  @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -22,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { experienceSchema, TExperience } from "@/lib/validation";
 import {
   createExperience,
@@ -30,13 +32,22 @@ import {
 import { Loader2 } from "lucide-react";
 
 const ICON_OPTIONS = [
-  { value: "LuGraduationCap", label: "Graduation Cap" },
-  { value: "CgWorkAlt", label: "Work" },
+  { value: "FaBriefcase", label: "Briefcase" },
+  { value: "FaCode", label: "Code" },
   { value: "FaReact", label: "React" },
-  { value: "SiNextdotjs", label: "Next.js" },
   { value: "FaNodeJs", label: "Node.js" },
-  { value: "SiTypescript", label: "TypeScript" },
+  { value: "FaDatabase", label: "Database" },
+  { value: "FaServer", label: "Server" },
 ];
+
+const LOCATION_TYPES = ["Remote", "Onsite", "Hybrid"] as const;
+const EMPLOYMENT_TYPES = [
+  "Full-time",
+  "Part-time",
+  "Contract",
+  "Intern",
+  "Freelance",
+] as const;
 
 export interface ExperienceData extends TExperience {
   id: string;
@@ -58,46 +69,69 @@ const ExperienceForm = ({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
       title: "",
+      companyName: "",
       location: "",
+      locationType: undefined,
+      employmentType: undefined,
       description: "",
       startDate: "",
       endDate: "",
+      current: false,
       icon: "",
+      companyLogoUrl: "",
     },
   });
+
+  const currentJob = form.watch("current");
 
   useEffect(() => {
     if (editExperience) {
       form.reset({
         title: editExperience.title,
-        location: editExperience.location,
+        companyName: editExperience.companyName || "",
+        location: editExperience.location || "",
+        locationType: editExperience.locationType,
+        employmentType: editExperience.employmentType,
         description: editExperience.description,
         startDate: editExperience.startDate,
-        endDate: editExperience.endDate,
+        endDate: editExperience.endDate || "",
+        current: editExperience.current || false,
         icon: editExperience.icon || "",
+        companyLogoUrl: editExperience.companyLogoUrl || "",
       });
     } else {
       form.reset({
         title: "",
+        companyName: "",
         location: "",
+        locationType: undefined,
+        employmentType: undefined,
         description: "",
         startDate: "",
         endDate: "",
+        current: false,
         icon: "",
+        companyLogoUrl: "",
       });
     }
   }, [editExperience, form]);
 
   async function onSubmit(values: TExperience) {
     setIsSubmitting(true);
+    // Clear end date if current job is checked
+    const submitValues = {
+      ...values,
+      endDate: values.current ? undefined : values.endDate,
+    };
+
     if (isEditing && editExperience) {
-      const result = await updateExperience(editExperience.id, values);
+      const result = await updateExperience(editExperience.id, submitValues);
       if (result.success) {
         form.reset();
         onCancelEdit?.();
       }
     } else {
-      const result = await createExperience(values);
+      const result = await createExperience(submitValues);
       if (result.success) {
         form.reset();
       }
@@ -133,7 +167,7 @@ const ExperienceForm = ({
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel>Job Title *</FormLabel>
                 <FormControl>
                   <Input placeholder="Senior Developer" {...field} />
                 </FormControl>
@@ -142,6 +176,22 @@ const ExperienceForm = ({
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="companyName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Company Inc." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
           <FormField
             control={form.control}
             name="location"
@@ -155,6 +205,56 @@ const ExperienceForm = ({
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="locationType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Location Type</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {LOCATION_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="employmentType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Employment Type</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ""}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {EMPLOYMENT_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <FormField
@@ -162,7 +262,7 @@ const ExperienceForm = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Description *</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Describe your role and responsibilities..."
@@ -175,13 +275,13 @@ const ExperienceForm = ({
           )}
         />
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-4">
           <FormField
             control={form.control}
             name="startDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Start Date</FormLabel>
+                <FormLabel>Start Date *</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
                 </FormControl>
@@ -197,9 +297,25 @@ const ExperienceForm = ({
               <FormItem>
                 <FormLabel>End Date</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <Input type="date" {...field} disabled={currentJob} />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="current"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-end space-x-2 space-y-0 pb-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="font-normal">Current Job</FormLabel>
               </FormItem>
             )}
           />
@@ -210,13 +326,10 @@ const ExperienceForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Icon</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value || ""}
-                >
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select an icon" />
+                      <SelectValue placeholder="Select icon" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -232,6 +345,24 @@ const ExperienceForm = ({
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="companyLogoUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Company Logo</FormLabel>
+              <FormControl>
+                <ImageUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  onRemove={() => field.onChange("")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button type="submit" className="w-fit" disabled={isSubmitting}>
           {isSubmitting ? (

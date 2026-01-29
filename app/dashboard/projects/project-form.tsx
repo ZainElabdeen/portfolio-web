@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,10 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/ui/image-upload";
-import { projectSchema } from "@/lib/validation";
+import { projectSchema, TProject } from "@/lib/validation";
 import { createProject, updateProject } from "@/actions/project.action";
-
-type TProject = z.infer<typeof projectSchema>;
 
 interface TagsInputProps {
   initialValue: string;
@@ -59,14 +57,17 @@ interface ProjectFormProps {
 
 const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
   const isEditing = !!editProject;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<TProject>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      title: editProject?.title || "",
-      description: editProject?.description || "",
-      tags: editProject?.tags || [],
-      imageUrl: editProject?.imageUrl || "",
+      title: "",
+      description: "",
+      tags: [],
+      imageUrl: "",
+      liveUrl: "",
+      githubUrl: "",
     },
   });
 
@@ -76,7 +77,9 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
         title: editProject.title,
         description: editProject.description,
         tags: editProject.tags,
-        imageUrl: editProject.imageUrl,
+        imageUrl: editProject.imageUrl || "",
+        liveUrl: editProject.liveUrl || "",
+        githubUrl: editProject.githubUrl || "",
       });
     } else {
       form.reset({
@@ -84,11 +87,14 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
         description: "",
         tags: [],
         imageUrl: "",
+        liveUrl: "",
+        githubUrl: "",
       });
     }
   }, [editProject, form]);
 
   async function onSubmit(values: TProject) {
+    setIsSubmitting(true);
     if (isEditing && editProject) {
       const result = await updateProject(editProject.id, values);
       if (result.success) {
@@ -101,6 +107,7 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
         form.reset();
       }
     }
+    setIsSubmitting(false);
   }
 
   return (
@@ -125,55 +132,87 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
           )}
         </div>
 
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Project title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Project title" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tags (comma separated)</FormLabel>
+                <FormControl>
+                  <TagsInput
+                    key={editProject?.id || "new"}
+                    initialValue={
+                      editProject?.tags?.join(", ") ||
+                      field.value?.join(", ") ||
+                      ""
+                    }
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>Description *</FormLabel>
               <FormControl>
-                <Textarea placeholder="Project description" {...field} />
+                <Textarea placeholder="Project description" rows={3} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tags (comma separated)</FormLabel>
-              <FormControl>
-                <TagsInput
-                  key={editProject?.id || "new"}
-                  initialValue={
-                    editProject?.tags?.join(", ") ||
-                    field.value?.join(", ") ||
-                    ""
-                  }
-                  onChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="liveUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Live URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="githubUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>GitHub URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://github.com/..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
@@ -193,8 +232,17 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
           )}
         />
 
-        <Button type="submit" className="w-fit">
-          {isEditing ? "Update Project" : "Add Project"}
+        <Button type="submit" className="w-fit" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {isEditing ? "Updating..." : "Adding..."}
+            </>
+          ) : isEditing ? (
+            "Update Project"
+          ) : (
+            "Add Project"
+          )}
         </Button>
       </form>
     </Form>
