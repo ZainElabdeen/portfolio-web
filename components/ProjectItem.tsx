@@ -11,7 +11,7 @@ export interface ProjectItemProps {
   title: string;
   description: string;
   tags: string[];
-  imageUrl: string | StaticImageData;
+  imageUrl: string | StaticImageData | null;
   alt?: string; // Optional alt text for accessibility
   link?: string; // Optional link to project
   className?: string; // Optional custom className
@@ -33,9 +33,9 @@ const ProjectItem = ({
   });
   // Helper to handle image source safely (DB URLs or StaticImageData)
   const getImageSrc = (
-    src: string | StaticImageData,
-  ): string | StaticImageData => {
-    if (!src) return "";
+    src: string | StaticImageData | null,
+  ): string | StaticImageData | null => {
+    if (!src) return null;
     if (typeof src === "string") {
       return src; // Return DB URL as-is (should be complete URL)
     }
@@ -92,25 +92,27 @@ const ProjectItem = ({
           </ul>
         </div>
 
-        <Image
-          src={safeImageUrl}
-          alt={alt}
-          quality={95}
-          width={1200}
-          height={1200}
-          className="absolute hidden sm:block top-8 -right-40 w-113 rounded-t-lg shadow-2xl
-        transition 
-        group-hover:scale-[1.04]
-        group-hover:-translate-x-3
-        group-hover:translate-y-3
-        group-hover:-rotate-2
+        {safeImageUrl && (
+          <Image
+            src={safeImageUrl}
+            alt={alt}
+            quality={95}
+            width={1200}
+            height={1200}
+            className="absolute hidden sm:block top-8 -right-40 w-113 rounded-t-lg shadow-2xl
+          transition
+          group-hover:scale-[1.04]
+          group-hover:-translate-x-3
+          group-hover:translate-y-3
+          group-hover:-rotate-2
 
-        group-even:group-hover:translate-x-3
-        group-even:group-hover:translate-y-3
-        group-even:group-hover:rotate-2
+          group-even:group-hover:translate-x-3
+          group-even:group-hover:translate-y-3
+          group-even:group-hover:rotate-2
 
-        group-even:right-[initial] group-even:-left-40"
-        />
+          group-even:right-[initial] group-even:-left-40"
+          />
+        )}
       </section>
     </motion.div>
   );

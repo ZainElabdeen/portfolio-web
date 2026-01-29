@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const formattedData = {
       ...data,
       startDate: new Date(data.startDate),
-      endDate: new Date(data.endDate),
+      endDate: data?.endDate ? new Date(data?.endDate) : null,
     };
 
     const newExperience = await prisma.experience.create({
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     console.error("Error creating experience:", error);
     return NextResponse.json(
       { error: "Validation failed", details: error },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

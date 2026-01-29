@@ -18,10 +18,12 @@ interface ResumePreviewProps {
   experiences: Array<{
     id: string;
     title: string;
-    location: string;
+    companyName?: string | null;
+    location?: string | null;
     description: string;
     startDate: Date;
-    endDate: Date;
+    endDate?: Date | null;
+    current: boolean;
   }>;
   educations: Array<{
     id: string;
@@ -29,6 +31,7 @@ interface ResumePreviewProps {
     degree: string;
     startDate: Date;
     endDate?: Date | null;
+    current: boolean;
   }>;
   skills: Array<{
     id: string;
@@ -125,11 +128,13 @@ export default function ResumePreview({
                   <div className="flex justify-between items-start mb-1">
                     <div>
                       <h3 className="font-semibold text-gray-900">{exp.title}</h3>
-                      <p className="text-sm text-gray-600">{exp.location}</p>
+                      <p className="text-sm text-gray-600">
+                        {exp.companyName}{exp.companyName && exp.location ? " · " : ""}{exp.location}
+                      </p>
                     </div>
                     <span className="text-sm text-gray-500 whitespace-nowrap">
                       {format(new Date(exp.startDate), "MMM yyyy")} -{" "}
-                      {format(new Date(exp.endDate), "MMM yyyy")}
+                      {exp.current ? "Present" : exp.endDate ? format(new Date(exp.endDate), "MMM yyyy") : "Present"}
                     </span>
                   </div>
                   <p className="text-sm text-gray-700 mt-1">{exp.description}</p>
@@ -157,7 +162,7 @@ export default function ResumePreview({
                   </div>
                   <span className="text-sm text-gray-500 whitespace-nowrap">
                     {format(new Date(edu.startDate), "MMM yyyy")} -{" "}
-                    {edu.endDate ? format(new Date(edu.endDate), "MMM yyyy") : "Present"}
+                    {edu.current ? "Present" : edu.endDate ? format(new Date(edu.endDate), "MMM yyyy") : "Present"}
                   </span>
                 </div>
               ))}

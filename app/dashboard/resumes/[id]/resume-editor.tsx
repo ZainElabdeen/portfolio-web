@@ -53,10 +53,12 @@ interface ResumeEditorProps {
     experiences: Array<{
       id: string;
       title: string;
-      location: string;
+      companyName?: string | null;
+      location?: string | null;
       description: string;
       startDate: Date;
-      endDate: Date;
+      endDate?: Date | null;
+      current: boolean;
     }>;
     educations: Array<{
       id: string;
@@ -64,6 +66,7 @@ interface ResumeEditorProps {
       degree: string;
       startDate: Date;
       endDate?: Date | null;
+      current: boolean;
     }>;
     skills: Array<{
       id: string;
@@ -73,10 +76,22 @@ interface ResumeEditorProps {
 }
 
 const sections: { id: Section; label: string; icon: React.ReactNode }[] = [
-  { id: "personal", label: "Personal Details", icon: <User className="h-4 w-4" /> },
+  {
+    id: "personal",
+    label: "Personal Details",
+    icon: <User className="h-4 w-4" />,
+  },
   { id: "summary", label: "Summary", icon: <FileText className="h-4 w-4" /> },
-  { id: "experience", label: "Experience", icon: <Briefcase className="h-4 w-4" /> },
-  { id: "education", label: "Education", icon: <GraduationCap className="h-4 w-4" /> },
+  {
+    id: "experience",
+    label: "Experience",
+    icon: <Briefcase className="h-4 w-4" />,
+  },
+  {
+    id: "education",
+    label: "Education",
+    icon: <GraduationCap className="h-4 w-4" />,
+  },
   { id: "skills", label: "Skills", icon: <Wrench className="h-4 w-4" /> },
 ];
 
@@ -96,9 +111,13 @@ export default function ResumeEditor({ resume, profile }: ResumeEditorProps) {
       website: initialContent.personal?.website || "",
     },
     summary: initialContent.summary || profile.summary || "",
-    selectedExperiences: initialContent.selectedExperiences || profile.experiences.map((e) => e.id),
-    selectedEducations: initialContent.selectedEducations || profile.educations.map((e) => e.id),
-    selectedSkills: initialContent.selectedSkills || profile.skills.map((s) => s.id),
+    selectedExperiences:
+      initialContent.selectedExperiences ||
+      profile.experiences.map((e) => e.id),
+    selectedEducations:
+      initialContent.selectedEducations || profile.educations.map((e) => e.id),
+    selectedSkills:
+      initialContent.selectedSkills || profile.skills.map((s) => s.id),
   });
 
   const handleSave = () => {
@@ -152,14 +171,14 @@ export default function ResumeEditor({ resume, profile }: ResumeEditorProps) {
     }));
   };
 
-  const selectedExperiences = profile.experiences.filter(
-    (e) => content.selectedExperiences?.includes(e.id)
+  const selectedExperiences = profile.experiences.filter((e) =>
+    content.selectedExperiences?.includes(e.id),
   );
-  const selectedEducations = profile.educations.filter(
-    (e) => content.selectedEducations?.includes(e.id)
+  const selectedEducations = profile.educations.filter((e) =>
+    content.selectedEducations?.includes(e.id),
   );
-  const selectedSkills = profile.skills.filter(
-    (s) => content.selectedSkills?.includes(s.id)
+  const selectedSkills = profile.skills.filter((s) =>
+    content.selectedSkills?.includes(s.id),
   );
 
   return (
@@ -267,7 +286,9 @@ export default function ResumeEditor({ resume, profile }: ResumeEditorProps) {
               <h3 className="font-semibold text-lg">Professional Summary</h3>
               <Textarea
                 value={content.summary || ""}
-                onChange={(e) => setContent((prev) => ({ ...prev, summary: e.target.value }))}
+                onChange={(e) =>
+                  setContent((prev) => ({ ...prev, summary: e.target.value }))
+                }
                 placeholder="Write a brief professional summary..."
                 className="min-h-[200px]"
               />
@@ -303,7 +324,11 @@ export default function ResumeEditor({ resume, profile }: ResumeEditorProps) {
                       />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{exp.title}</p>
-                        <p className="text-xs text-muted-foreground">{exp.location}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {exp.companyName}
+                          {exp.companyName && exp.location ? " · " : ""}
+                          {exp.location}
+                        </p>
                       </div>
                     </label>
                   ))}
@@ -341,7 +366,9 @@ export default function ResumeEditor({ resume, profile }: ResumeEditorProps) {
                       />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{edu.degree}</p>
-                        <p className="text-xs text-muted-foreground">{edu.institution}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {edu.institution}
+                        </p>
                       </div>
                     </label>
                   ))}

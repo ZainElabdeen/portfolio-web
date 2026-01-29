@@ -33,14 +33,17 @@ interface Project {
   title: string;
   description: string;
   tags: string[];
-  imageUrl: string;
+  imageUrl: string | null;
+  liveUrl: string | null;
+  githubUrl: string | null;
+  order: number | null;
 }
 
 interface ProjectTableProps {
   projects: Project[];
 }
 
-function isValidImageUrl(url: string): boolean {
+function isValidImageUrl(url: string | null): url is string {
   if (!url) return false;
   return (
     url.startsWith("/") ||
@@ -51,12 +54,21 @@ function isValidImageUrl(url: string): boolean {
 
 export default function ProjectTable({ projects }: ProjectTableProps) {
   const [editingProject, setEditingProject] = useState<ProjectData | null>(
-    null
+    null,
   );
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleEdit = (project: Project) => {
-    setEditingProject(project);
+    setEditingProject({
+      id: project.id,
+      title: project.title,
+      description: project.description,
+      tags: project.tags,
+      imageUrl: project.imageUrl || undefined,
+      liveUrl: project.liveUrl || undefined,
+      githubUrl: project.githubUrl || undefined,
+      order: project.order || undefined,
+    });
   };
 
   const handleCancelEdit = () => {
@@ -144,7 +156,8 @@ export default function ProjectTable({ projects }: ProjectTableProps) {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete Project</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to delete &quot;{project.title}
+                            Are you sure you want to delete &quot;
+                            {project.title}
                             &quot;? This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>

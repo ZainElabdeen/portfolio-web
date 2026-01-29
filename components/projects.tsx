@@ -15,7 +15,7 @@ type Project = {
   title: string;
   description: string;
   tags: string[];
-  imageUrl: string;
+  imageUrl: string | null;
 };
 
 const Projects = ({ projects = [] }: ProjectsProps) => {
