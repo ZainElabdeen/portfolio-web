@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { updateResume } from "@/actions/resume.action";
 import { toast } from "sonner";
 import {
@@ -284,13 +284,12 @@ export default function ResumeEditor({ resume, profile }: ResumeEditorProps) {
           {activeSection === "summary" && (
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Professional Summary</h3>
-              <Textarea
+              <RichTextEditor
                 value={content.summary || ""}
-                onChange={(e) =>
-                  setContent((prev) => ({ ...prev, summary: e.target.value }))
+                onChange={(value) =>
+                  setContent((prev) => ({ ...prev, summary: value }))
                 }
                 placeholder="Write a brief professional summary..."
-                className="min-h-[200px]"
               />
             </div>
           )}

@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { projectSchema, TProject } from "@/lib/validation";
 import { createProject, updateProject } from "@/actions/project.action";
@@ -177,7 +177,11 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
             <FormItem>
               <FormLabel>Description *</FormLabel>
               <FormControl>
-                <Textarea placeholder="Project description" rows={3} {...field} />
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Project description..."
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
