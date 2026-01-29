@@ -44,4 +44,4 @@ next-env.d.ts
 /.clerk/
 
 # Ignore Prisma client files
-app/generated/*
+prisma/generated/*
