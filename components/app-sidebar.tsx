@@ -1,4 +1,4 @@
-import { Briefcase, Layers, Star, FileText } from "lucide-react";
+import { Briefcase, Layers, Star, FileText, GraduationCap } from "lucide-react";
 import Link from "next/link";
 
 import {
@@ -27,6 +27,11 @@ const items = [
     title: "Skills",
     url: "/dashboard/skills",
     icon: Star,
+  },
+  {
+    title: "Education",
+    url: "/dashboard/education",
+    icon: GraduationCap,
   },
   {
     title: "Resumes",
