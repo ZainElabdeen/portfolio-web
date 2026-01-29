@@ -8,8 +8,6 @@ import autoaidImg from "@/public/autoaid-crm.png";
 import zedImg from "@/public/zed-admin.png";
 // import aljImg from "@/public/alj-micrsite.png";
 
-
-
 export interface IProjectItem {
   title: string;
   description: string;
@@ -37,6 +35,10 @@ export const links = [
   {
     name: "Experience",
     hash: "#experience",
+  },
+  {
+    name: "Education",
+    hash: "#education",
   },
   // {
   //   name: "Contact",
@@ -95,18 +97,28 @@ export const experiencesData = [
   },
 ] as const;
 
-export const projectsData : readonly IProjectItem[]  = [
+export const projectsData: readonly IProjectItem[] = [
   {
     title: "Zed Admin",
-    description: "A full-stack admin panel and API for managing Zed, a transportation platform redefining seamless and efficient commutes.",
-    tags: ["React", "Nest.js", "PostgreSQL", "Material UI", "GraphQL", "MikroORM", "Google Maps"],
+    description:
+      "A full-stack admin panel and API for managing Zed, a transportation platform redefining seamless and efficient commutes.",
+    tags: [
+      "React",
+      "Nest.js",
+      "PostgreSQL",
+      "Material UI",
+      "GraphQL",
+      "MikroORM",
+      "Google Maps",
+    ],
     imageUrl: zedImg,
   },
   {
-      title: "Auto Aid CRM",
-      description: "An admin panel built with React and TypeScript to manage service requests, connecting vehicle owners with technicians seamlessly.",
-      tags: ["React", "TypeScript", "Material UI", "Redux Toolkit"],
-      imageUrl: autoaidImg,
+    title: "Auto Aid CRM",
+    description:
+      "An admin panel built with React and TypeScript to manage service requests, connecting vehicle owners with technicians seamlessly.",
+    tags: ["React", "TypeScript", "Material UI", "Redux Toolkit"],
+    imageUrl: autoaidImg,
   },
   // {
   //   title: "ALJ Microsite",

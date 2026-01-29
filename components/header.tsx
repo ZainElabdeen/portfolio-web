@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import clsx from "clsx";
+// import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 import { links } from "@/lib/data";
 import { useActiveSection } from "@/providers/active-section-provider";
@@ -29,7 +30,7 @@ const Header = () => {
               animate={{ y: 0, opacity: 1 }}
             >
               <Link
-                href={link.hash}
+                href={`/${link.hash}`}
                 onClick={() => {
                   setActiveSection(link.name);
                   setTimeOfLastClick(Date.now());
@@ -57,6 +58,14 @@ const Header = () => {
               </Link>
             </motion.li>
           ))}
+          {/* <SignedOut>
+            <SignInButton mode="modal">
+              <button>Login</button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn> */}
         </ul>
       </nav>
     </header>

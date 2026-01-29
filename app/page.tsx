@@ -1,19 +1,42 @@
 import About from "@/components/about";
+import Education from "@/components/education";
 import Experience from "@/components/experience";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 import Intro from "@/components/intro";
 import Projects from "@/components/projects";
 import SectionDivider from "@/components/section-divider";
 import Skills from "@/components/skills";
+import ActiveSectionProvider from "@/providers/active-section-provider";
+import { getProjects } from "@/actions/project.action";
+import { getSkills } from "@/actions/skill.action";
+import { getExperiences } from "@/actions/experience.action";
+import { getEducations } from "@/actions/education.action";
 
-export default function Home() {
+export default async function Home() {
+  const [dbProjects, dbSkills, dbExperiences, dbEducations] = await Promise.all([
+    getProjects(),
+    getSkills(),
+    getExperiences(),
+    getEducations(),
+  ]);
+
+  const projects = dbProjects.length > 0 ? dbProjects : [];
+  const skills = dbSkills.map((s) => s.title);
+
   return (
-    <main className="flex flex-col items-center px-4">
-      <Intro />
-      <SectionDivider />
-      <About />
-      <Projects />
-      <Skills />
-      <Experience />
-    </main>
+    <ActiveSectionProvider>
+      <main className="flex flex-col items-center px-4 pt-28 sm:pt-36">
+        <Header />
+        <Intro />
+        <SectionDivider />
+        <About />
+        <Projects projects={projects} />
+        <Skills skills={skills} />
+        <Experience experiences={dbExperiences} />
+        <Education educations={dbEducations} />
+        <Footer />
+      </main>
+    </ActiveSectionProvider>
   );
 }
