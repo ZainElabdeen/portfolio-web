@@ -1,53 +1,36 @@
-// import type { Metadata } from "next";
-// import localFont from "next/font/local";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  // BreadcrumbPage,
-  // BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-// import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-
-// import "./globals.css";
-// import Header from "@/components/header";
-// import ActiveSectionProvider from "@/providers/active-section-provider";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import ThemeProvider from "@/providers/theme-provider";
-// import Footer from "@/components/footer";
-// import ThemeControl from "@/components/theme-control";
 import { ClerkProvider } from "@clerk/nextjs";
 
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
+const ALLOWED_ADMIN_EMAIL = process.env.ALLOWED_ADMIN_EMAIL;
 
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
-
-// export const metadata: Metadata = {
-//   title: "Zainelabdeen Portfolio",
-//   description:
-//     "Zainelabdeen is a Full Stack Developer with 7 years of experience.",
-// };
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Restrict dashboard access to the allowed admin email
+  if (ALLOWED_ADMIN_EMAIL) {
+    const user = await currentUser();
+    const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+    if (!user || userEmail !== ALLOWED_ADMIN_EMAIL) {
+      redirect("/");
+    }
+  }
   return (
     <ClerkProvider
       appearance={{

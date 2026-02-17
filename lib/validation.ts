@@ -70,6 +70,25 @@ export const educationSchema = z.object({
 
 export type TEducation = z.infer<typeof educationSchema>;
 
+// Profile validation
+export const profileSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  summary: z.string().optional(),
+  title: z.string().optional(),
+  yearsOfExp: z.number().optional(),
+  introText: z.string().optional(),
+  profileImageUrl: z.string().optional(),
+  cvUrl: z.string().optional(),
+  linkedinUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+  githubUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+  aboutText: z.string().optional(),
+  location: z.string().optional(),
+});
+
+export type TProfile = z.infer<typeof profileSchema>;
+
 // Common validation
 export const ObjectIdSchema = z.string().regex(/^[a-fA-F0-9]{24}$/, {
   message: "Invalid ID format",
