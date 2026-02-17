@@ -1,4 +1,4 @@
-import { Briefcase, Layers, Star, FileText, GraduationCap } from "lucide-react";
+import { Briefcase, Layers, Star, FileText, GraduationCap, User } from "lucide-react";
 import Link from "next/link";
 
 import {
@@ -13,6 +13,11 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
+  {
+    title: "Profile",
+    url: "/dashboard/profile",
+    icon: User,
+  },
   {
     title: "Projects",
     url: "/dashboard/projects",

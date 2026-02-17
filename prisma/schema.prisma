@@ -98,6 +98,21 @@ model UserProfile {
   phone    String?
   summary  String?
 
+  // Intro section fields
+  title          String? // e.g., "Full Stack Engineer"
+  yearsOfExp     Int?    // Years of experience
+  introText      String? // Rich text intro paragraph
+  profileImageUrl String?
+  cvUrl          String?
+  linkedinUrl    String?
+  githubUrl      String?
+
+  // About section fields
+  aboutText      String? // Rich text about content
+
+  // Location
+  location       String?
+
   experiences Experience[]
   educations  Education[]
   skills      Skill[]

@@ -1,13 +1,33 @@
 "use client";
 
-/* eslint-disable react/no-unescaped-entities */
 import { motion } from "framer-motion";
 
 import SectionHeading from "./section-heading";
 import { useSectionInView } from "@/hooks/use-sectionIn-view";
+import { RichTextViewer } from "@/components/ui/rich-text-viewer";
 
-const About = () => {
+interface Profile {
+  aboutText?: string | null;
+}
+
+interface AboutProps {
+  profile: Profile | null;
+}
+
+const About = ({ profile }: AboutProps) => {
   const { ref } = useSectionInView("About");
+
+  const aboutText = profile?.aboutText;
+
+  // Default content if no profile aboutText exists
+  const defaultContent = `
+    <p class="mb-3">
+      Welcome to my portfolio! I am a passionate developer dedicated to creating
+      amazing digital experiences. Update your profile in the dashboard to customize
+      this section with your own story.
+    </p>
+  `;
+
   return (
     <motion.section
       className="mb-28 max-w-[48rem] text-center leading-8 sm:mb-40 scroll-mt-28"
@@ -18,45 +38,10 @@ const About = () => {
       ref={ref}
     >
       <SectionHeading>About Me</SectionHeading>
-      <p className="mb-3">
-        I am a seasoned{" "}
-        <span className="font-medium">Full Stack Developer</span>
-        with over 5 years of experience in front-end and back-end development. I
-        specialize in creating dynamic web applications using modern frameworks
-        like <span className="font-medium">React, NestJS, and GraphQL</span>. My
-        expertise also extends to technologies such as Docker and Kubernetes.
-      </p>
-
-      <p className="mb-3">
-        I have a passion for{" "}
-        <span className="font-medium">problem-solving</span>
-        and love the challenge of finding efficient solutions to complex
-        problems. I am proficient in state management, UI libraries like
-        <span className="font-medium"> Material-UI</span>, and performance
-        optimization. Collaboration is key for me, and I work closely with
-        designers and other developers to deliver seamless user experiences.
-      </p>
-
-      <p className="mb-3">
-        I hold a B.Sc. (Honours) in Computer Engineering from the
-        <span className="font-medium"> University of Gezira</span>. My career
-        journey has taken me from being a{" "}
-        <span className="font-medium">Teaching Assistant</span> to a{" "}
-        <span className="font-medium">System Administrator</span>, and now to a
-        Full Stack Developer, honing skills in diverse environments.
-      </p>
-
-      <p>
-        <span className="italic">Outside of coding</span>, I enjoy staying
-        current with new technologies, playing football, and exploring the world
-        of <span className="font-medium">DevOps</span>. I'm always eager to
-        learn and recently completed certifications in{" "}
-        <span className="font-medium">
-          Mobile App Development, Node.js Unit Testing
-        </span>
-        , and more. I am currently open to new opportunities and looking for
-        challenging projects where I can make a difference.
-      </p>
+      <RichTextViewer
+        content={aboutText || defaultContent}
+        className="text-center"
+      />
     </motion.section>
   );
 };

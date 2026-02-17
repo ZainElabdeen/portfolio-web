@@ -12,13 +12,15 @@ import { getProjects } from "@/actions/project.action";
 import { getSkills } from "@/actions/skill.action";
 import { getExperiences } from "@/actions/experience.action";
 import { getEducations } from "@/actions/education.action";
+import { getPublicProfile } from "@/actions/profile.action";
 
 export default async function Home() {
-  const [dbProjects, dbSkills, dbExperiences, dbEducations] = await Promise.all([
+  const [dbProjects, dbSkills, dbExperiences, dbEducations, profile] = await Promise.all([
     getProjects(),
     getSkills(),
     getExperiences(),
     getEducations(),
+    getPublicProfile(),
   ]);
 
   const projects = dbProjects.length > 0 ? dbProjects : [];
@@ -28,9 +30,9 @@ export default async function Home() {
     <ActiveSectionProvider>
       <main className="flex flex-col items-center px-4 pt-28 sm:pt-36">
         <Header />
-        <Intro />
+        <Intro profile={profile} />
         <SectionDivider />
-        <About />
+        <About profile={profile} />
         <Projects projects={projects} />
         <Skills skills={skills} />
         <Experience experiences={dbExperiences} />
