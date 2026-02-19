@@ -130,6 +130,24 @@ async function main() {
   await prisma.project.deleteMany();
   await prisma.experience.deleteMany();
   await prisma.skill.deleteMany();
+  await prisma.education.deleteMany();
+  await prisma.resume.deleteMany();
+  await prisma.profile.deleteMany();
+
+  // Create profile
+  console.log("👤 Creating profile...");
+  const profile = await prisma.profile.create({
+    data: {
+      fullName: "Zain Alabdeen",
+      email: "zain@example.com",
+      phone: "+1234567890",
+      summary: "Full Stack Developer with expertise in React, Node.js, and cloud technologies",
+      title: "Full Stack Engineer",
+      yearsOfExp: 8,
+      location: "Dubai, UAE",
+    },
+  });
+  console.log(`✅ Created profile: ${profile.fullName}`);
 
   // Seed Projects
   console.log("📦 Seeding projects...");

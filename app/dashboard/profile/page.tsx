@@ -1,8 +1,8 @@
-import { ensureUserProfile } from "@/actions/profile.action";
+import { getUserProfile } from "@/actions/profile.action";
 import ProfileForm from "./profile-form";
 
 export default async function ProfilePage() {
-  const profile = await ensureUserProfile();
+  const profile = await getUserProfile();
 
   return (
     <div className="space-y-6">

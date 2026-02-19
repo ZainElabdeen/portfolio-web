@@ -173,3 +173,41 @@
 .tiptap u {
   text-decoration: underline;
 }
+
+/* ── Print ───────────────────────────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 32px 32px;
+  }
+
+  /* Force light mode regardless of OS/browser dark-mode setting */
+  html,
+  html.dark {
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    width: 794px;
+    background: white !important;
+    color: #111827 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Strip dark-mode CSS variable overrides so all resume text prints dark */
+  html.dark,
+  html.dark body,
+  html.dark * {
+    --background: #ffffff;
+    --foreground: #111827;
+    color: inherit;
+  }
+
+  /* Force all SVG icons to use their explicit inline color, not dark-mode currentColor */
+  svg {
+    color: currentColor !important;
+    stroke: currentColor !important;
+  }
+}

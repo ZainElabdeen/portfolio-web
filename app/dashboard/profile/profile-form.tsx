@@ -21,26 +21,28 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { profileSchema, TProfile } from "@/lib/validation";
-import { updateUserProfile } from "@/actions/profile.action";
+import { createUserProfile, updateUserProfile } from "@/actions/profile.action";
 import { toast } from "sonner";
 
+interface ProfileData {
+  id: string;
+  fullName: string;
+  email: string;
+  phone?: string | null;
+  summary?: string | null;
+  title?: string | null;
+  yearsOfExp?: number | null;
+  introText?: string | null;
+  profileImageUrl?: string | null;
+  cvUrl?: string | null;
+  linkedinUrl?: string | null;
+  githubUrl?: string | null;
+  aboutText?: string | null;
+  location?: string | null;
+}
+
 interface ProfileFormProps {
-  profile: {
-    id: string;
-    fullName: string;
-    email: string;
-    phone?: string | null;
-    summary?: string | null;
-    title?: string | null;
-    yearsOfExp?: number | null;
-    introText?: string | null;
-    profileImageUrl?: string | null;
-    cvUrl?: string | null;
-    linkedinUrl?: string | null;
-    githubUrl?: string | null;
-    aboutText?: string | null;
-    location?: string | null;
-  };
+  profile: ProfileData | null;
 }
 
 export default function ProfileForm({ profile }: ProfileFormProps) {
@@ -49,29 +51,31 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
   const form = useForm<TProfile>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      fullName: profile.fullName || "",
-      email: profile.email || "",
-      phone: profile.phone || "",
-      summary: profile.summary || "",
-      title: profile.title || "",
-      yearsOfExp: profile.yearsOfExp || undefined,
-      introText: profile.introText || "",
-      profileImageUrl: profile.profileImageUrl || "",
-      cvUrl: profile.cvUrl || "",
-      linkedinUrl: profile.linkedinUrl || "",
-      githubUrl: profile.githubUrl || "",
-      aboutText: profile.aboutText || "",
-      location: profile.location || "",
+      fullName: profile?.fullName || "",
+      email: profile?.email || "",
+      phone: profile?.phone || "",
+      summary: profile?.summary || "",
+      title: profile?.title || "",
+      yearsOfExp: profile?.yearsOfExp || undefined,
+      introText: profile?.introText || "",
+      profileImageUrl: profile?.profileImageUrl || "",
+      cvUrl: profile?.cvUrl || "",
+      linkedinUrl: profile?.linkedinUrl || "",
+      githubUrl: profile?.githubUrl || "",
+      aboutText: profile?.aboutText || "",
+      location: profile?.location || "",
     },
   });
 
   async function onSubmit(values: TProfile) {
     setIsSubmitting(true);
-    const result = await updateUserProfile(profile.id, values);
+    const result = profile
+      ? await updateUserProfile(profile.id, values)
+      : await createUserProfile(values);
     if (result.success) {
-      toast.success("Profile updated successfully");
+      toast.success(profile ? "Profile updated successfully" : "Profile created successfully");
     } else {
-      toast.error(result.error || "Failed to update profile");
+      toast.error(result.error || "Failed to save profile");
     }
     setIsSubmitting(false);
   }
@@ -398,8 +402,10 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
               </>
-            ) : (
+            ) : profile ? (
               "Save Changes"
+            ) : (
+              "Create Profile"
             )}
           </Button>
         </div>

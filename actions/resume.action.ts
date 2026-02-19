@@ -2,49 +2,32 @@
 
 import prisma from "@/prisma/client";
 import { revalidatePath } from "next/cache";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
-// Define Types inline or import from validation file if created
 type TResume = {
   title: string;
   description?: string;
   layout?: string;
   themeColor?: string;
-  content: any; // JSON content
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  content?: any;
+  experienceIds?: string[];
+  educationIds?: string[];
+  skillIds?: string[];
+  projectIds?: string[];
 };
 
 export const createResume = async (data: TResume) => {
-  const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
-
   try {
-    // Ensure UserProfile exists
-    let userProfile = await prisma.userProfile.findUnique({
-      where: { userId },
-    });
-
-    if (!userProfile) {
-      // Create a basic profile if it doesn't exist
-      const user = await currentUser();
-      userProfile = await prisma.userProfile.create({
-        data: {
-          userId,
-          email:
-            user?.emailAddresses?.[0]?.emailAddress ||
-            "placeholder@example.com",
-          fullName: user?.fullName || user?.firstName || "New User",
-        },
-      });
-    }
-
     const resume = await prisma.resume.create({
       data: {
         title: data.title,
         layout: data.layout || "modern",
         themeColor: data.themeColor || "#000000",
         content: data.content ?? {},
-        userProfileId: userProfile.id,
+        experienceIds: data.experienceIds || [],
+        educationIds: data.educationIds || [],
+        skillIds: data.skillIds || [],
+        projectIds: data.projectIds || [],
       },
     });
 
@@ -57,51 +40,31 @@ export const createResume = async (data: TResume) => {
 };
 
 export const getResumes = async () => {
-  const { userId } = await auth();
-  if (!userId) return [];
-
-  // Find profile
-  const userProfile = await prisma.userProfile.findUnique({
-    where: { userId },
-  });
-
-  if (!userProfile) return [];
-
-  return await prisma.resume.findMany({
-    where: { userProfileId: userProfile.id },
-    orderBy: { updatedAt: "desc" },
-  });
+  try {
+    return await prisma.resume.findMany({
+      orderBy: { updatedAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch resumes:", error);
+    return [];
+  }
 };
 
 export const getResumeById = async (id: string) => {
-  const { userId } = await auth();
-  if (!userId) return null;
+  try {
+    const resume = await prisma.resume.findUnique({
+      where: { id },
+    });
 
-  const resume = await prisma.resume.findUnique({
-    where: { id },
-    include: { userProfile: true },
-  });
-
-  if (!resume || resume.userProfile.userId !== userId) return null; // Security check
-
-  return resume;
+    return resume;
+  } catch (error) {
+    console.error("Failed to fetch resume:", error);
+    return null;
+  }
 };
 
 export const updateResume = async (id: string, data: Partial<TResume>) => {
-  const { userId } = await auth();
-  if (!userId) return { success: false, error: "Unauthorized" };
-
   try {
-    // Verify ownership
-    const existing = await prisma.resume.findUnique({
-      where: { id },
-      include: { userProfile: true },
-    });
-
-    if (!existing || existing.userProfile.userId !== userId) {
-      return { success: false, error: "Unauthorized" };
-    }
-
     const updated = await prisma.resume.update({
       where: { id },
       data: {
@@ -109,6 +72,10 @@ export const updateResume = async (id: string, data: Partial<TResume>) => {
         layout: data.layout,
         themeColor: data.themeColor,
         content: data.content,
+        experienceIds: data.experienceIds,
+        educationIds: data.educationIds,
+        skillIds: data.skillIds,
+        projectIds: data.projectIds,
       },
     });
 
@@ -122,20 +89,7 @@ export const updateResume = async (id: string, data: Partial<TResume>) => {
 };
 
 export const deleteResume = async (id: string) => {
-  const { userId } = await auth();
-  if (!userId) return { success: false, error: "Unauthorized" };
-
   try {
-    // Verify ownership
-    const existing = await prisma.resume.findUnique({
-      where: { id },
-      include: { userProfile: true },
-    });
-
-    if (!existing || existing.userProfile.userId !== userId) {
-      return { success: false, error: "Unauthorized" };
-    }
-
     await prisma.resume.delete({ where: { id } });
     revalidatePath("/dashboard/resumes");
     return { success: true };
