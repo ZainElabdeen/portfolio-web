@@ -1,4 +1,4 @@
-import { Briefcase, Layers, Star, FileText, GraduationCap, User } from "lucide-react";
+import { Briefcase, Layers, Star, FileText, GraduationCap, User, Bot } from "lucide-react";
 import Link from "next/link";
 
 import {
@@ -42,6 +42,11 @@ const items = [
     title: "Resumes",
     url: "/dashboard/resumes",
     icon: FileText,
+  },
+  {
+    title: "Job Evaluator",
+    url: "/dashboard/job-evaluator",
+    icon: Bot,
   },
 ];
 

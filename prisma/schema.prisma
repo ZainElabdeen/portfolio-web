@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Single-user portfolio schema - FlowCV style
+// All entities are top-level and belong to the single authenticated user
 
 generator client {
   provider = "prisma-client-js"
@@ -14,24 +11,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Project {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  tags        String[]
+//////////////////////////////////////
+// PERSONAL INFO (SINGLE ENTRY ONLY)
+//////////////////////////////////////
 
-  imageUrl  String?
-  liveUrl   String?
-  githubUrl String?
+model Profile {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  order Int?
+  // Basic info
+  fullName String
+  email    String
+  phone    String?
+  location String?
 
-  userProfileId String?      @db.ObjectId
-  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+  // Professional summary
+  title      String? // e.g., "Full Stack Engineer"
+  summary    String? // Brief professional summary
+  yearsOfExp Int?    // Years of experience
+
+  // Rich text sections for homepage
+  introText String? // Rich text intro paragraph
+  aboutText String? // Rich text about content
+
+  // Media & Links
+  profileImageUrl String?
+  cvUrl           String? // Link to downloadable CV/PDF
+  linkedinUrl     String?
+  githubUrl       String?
+  websiteUrl      String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+//////////////////////////////////////
+// TOP-LEVEL ENTITIES (NO RELATIONS)
+//////////////////////////////////////
 
 model Experience {
   id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -42,33 +57,21 @@ model Experience {
   locationType   String? // Remote / Onsite / Hybrid
   employmentType String? // Full-time / Part-time / Contract / Intern
 
-  description    String
+  description    String // Rich text
   icon           String?
   companyLogoUrl String?
 
   startDate DateTime
   endDate   DateTime?
-  current   Boolean   @default(false)
+  current   Boolean  @default(false)
 
-  order Int?
-
-  userProfileId String?      @db.ObjectId
-  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+  order Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-model Skill {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String @unique
-  order Int?
-
-  userProfileId String?      @db.ObjectId
-  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([startDate])
+  @@index([order])
 }
 
 model Education {
@@ -76,66 +79,80 @@ model Education {
   institution String
   degree      String
 
-  startDate DateTime
-  endDate   DateTime?
-  current   Boolean   @default(false)
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean  @default(false)
+  description String? // Optional field/major description
 
-  description String?
-  order       Int?
-
-  userProfileId String?      @db.ObjectId
-  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+  order Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([startDate])
+  @@index([order])
 }
 
-model UserProfile {
+model Skill {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String  @unique
-  fullName String
-  email    String
-  phone    String?
-  summary  String?
+  title    String  @unique // Globally unique since single user
+  category String? // e.g., "Frontend", "Backend", "DevOps"
+  level    Int?    // Optional proficiency level 1-5
 
-  // Intro section fields
-  title          String? // e.g., "Full Stack Engineer"
-  yearsOfExp     Int?    // Years of experience
-  introText      String? // Rich text intro paragraph
-  profileImageUrl String?
-  cvUrl          String?
-  linkedinUrl    String?
-  githubUrl      String?
-
-  // About section fields
-  aboutText      String? // Rich text about content
-
-  // Location
-  location       String?
-
-  experiences Experience[]
-  educations  Education[]
-  skills      Skill[]
-  projects    Project[]
-  resumes     Resume[]
+  order Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([category])
 }
+
+model Project {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String // Rich text
+  tags        String[]
+
+  imageUrl  String?
+  liveUrl   String?
+  githubUrl String?
+
+  order Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+//////////////////////////////////////
+// RESUME - REFERENCES IDS ONLY
+//////////////////////////////////////
 
 model Resume {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
 
-  userProfileId String      @db.ObjectId
-  userProfile   UserProfile @relation(fields: [userProfileId], references: [id])
-
+  // Visual customization
   themeColor String @default("#000000")
   layout     String @default("modern")
 
-  content Json
-  version Int  @default(1)
+  // Content selection - store IDs of what to include
+  // This allows user to pick and choose what goes in each resume
+  experienceIds String[] @db.ObjectId
+  educationIds  String[] @db.ObjectId
+  skillIds      String[] @db.ObjectId
+  projectIds    String[] @db.ObjectId
+
+  // Custom content specific to this resume (optional overrides)
+  // Stores: { personal: {...}, summary: "...", customExperiences: [...], etc. }
+  content Json?
+
+  version Int @default(1)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
 }

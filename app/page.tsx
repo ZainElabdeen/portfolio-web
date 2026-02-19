@@ -8,22 +8,22 @@ import Projects from "@/components/projects";
 import SectionDivider from "@/components/section-divider";
 import Skills from "@/components/skills";
 import ActiveSectionProvider from "@/providers/active-section-provider";
+import { getPublicProfile } from "@/actions/profile.action";
 import { getProjects } from "@/actions/project.action";
 import { getSkills } from "@/actions/skill.action";
 import { getExperiences } from "@/actions/experience.action";
 import { getEducations } from "@/actions/education.action";
-import { getPublicProfile } from "@/actions/profile.action";
 
 export default async function Home() {
-  const [dbProjects, dbSkills, dbExperiences, dbEducations, profile] = await Promise.all([
+  const [profile, projects, dbSkills, experiences, educations] = await Promise.all([
+    getPublicProfile(),
     getProjects(),
     getSkills(),
     getExperiences(),
     getEducations(),
-    getPublicProfile(),
   ]);
 
-  const projects = dbProjects.length > 0 ? dbProjects : [];
+  // Map skills to titles for the Skills component
   const skills = dbSkills.map((s) => s.title);
 
   return (
@@ -35,8 +35,8 @@ export default async function Home() {
         <About profile={profile} />
         <Projects projects={projects} />
         <Skills skills={skills} />
-        <Experience experiences={dbExperiences} />
-        <Education educations={dbEducations} />
+        <Experience experiences={experiences} />
+        <Education educations={educations} />
         <Footer />
       </main>
     </ActiveSectionProvider>

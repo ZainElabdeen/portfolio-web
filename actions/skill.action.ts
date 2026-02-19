@@ -18,7 +18,9 @@ export const getSkills = async () => {
 
 export const createSkill = async (formData: TSkill) => {
   try {
-    await prisma.skill.create({ data: formData });
+    await prisma.skill.create({ 
+      data: formData
+    });
     revalidatePath("/");
     revalidatePath("/dashboard/skills");
     return { success: true };
@@ -33,7 +35,9 @@ export const createSkillsBulk = async (skills: string[]) => {
   try {
     // Filter out duplicates and get existing skills
     const existingSkills = await prisma.skill.findMany({
-      where: { title: { in: skills } },
+      where: { 
+        title: { in: skills }
+      },
       select: { title: true },
     });
     const existingTitles = new Set(existingSkills.map((s) => s.title));

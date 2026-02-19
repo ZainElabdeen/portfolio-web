@@ -89,6 +89,36 @@ export const profileSchema = z.object({
 
 export type TProfile = z.infer<typeof profileSchema>;
 
+// AI Job Evaluation validation
+export const jobEvaluationFormSchema = z.object({
+  jobDescription: z
+    .string()
+    .min(50, "Job description must be at least 50 characters"),
+  provider: z.enum(["openai", "anthropic", "google"]),
+});
+
+export type TJobEvaluationForm = z.infer<typeof jobEvaluationFormSchema>;
+
+export const aiEvaluationResponseSchema = z.object({
+  evaluation: z.object({
+    matchPercentage: z.number().min(0).max(100),
+    overallAssessment: z.string(),
+    strengths: z.array(z.string()),
+    gaps: z.array(z.string()),
+    recommendations: z.array(z.string()),
+  }),
+  suggestedResume: z.object({
+    resumeTitle: z.string(),
+    summary: z.string(),
+    selectedExperienceIds: z.array(z.string()),
+    selectedEducationIds: z.array(z.string()),
+    selectedSkillIds: z.array(z.string()),
+  }),
+  suggestedNewSkills: z.array(z.string()),
+});
+
+export type TAIEvaluationResponse = z.infer<typeof aiEvaluationResponseSchema>;
+
 // Common validation
 export const ObjectIdSchema = z.string().regex(/^[a-fA-F0-9]{24}$/, {
   message: "Invalid ID format",
