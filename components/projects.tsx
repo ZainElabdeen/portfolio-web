@@ -16,6 +16,8 @@ type Project = {
   description: string;
   tags: string[];
   imageUrl: string | null;
+  liveUrl?: string | null;
+  githubUrl?: string | null;
 };
 
 const Projects = ({ projects = [] }: ProjectsProps) => {
@@ -32,6 +34,7 @@ const Projects = ({ projects = [] }: ProjectsProps) => {
               description={project.description}
               tags={project.tags}
               imageUrl={project.imageUrl}
+              link={project.liveUrl ?? project.githubUrl ?? undefined}
             />
           </Fragment>
         ))}
