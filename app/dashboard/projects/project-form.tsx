@@ -28,6 +28,10 @@ interface TagsInputProps {
 const TagsInput = ({ initialValue, onChange }: TagsInputProps) => {
   const [inputValue, setInputValue] = useState(initialValue);
 
+  useEffect(() => {
+    setInputValue(initialValue);
+  }, [initialValue]);
+
   return (
     <Input
       placeholder="React, TypeScript, Next.js"
@@ -156,11 +160,7 @@ const ProjectForm = ({ editProject, onCancelEdit }: ProjectFormProps) => {
                 <FormControl>
                   <TagsInput
                     key={editProject?.id || "new"}
-                    initialValue={
-                      editProject?.tags?.join(", ") ||
-                      field.value?.join(", ") ||
-                      ""
-                    }
+                    initialValue={field.value?.join(", ") || ""}
                     onChange={field.onChange}
                   />
                 </FormControl>

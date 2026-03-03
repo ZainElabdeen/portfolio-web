@@ -65,6 +65,19 @@ export const createSkillsBulk = async (skills: string[]) => {
   }
 };
 
+export const updateSkill = async (id: string, title: string) => {
+  try {
+    await prisma.skill.update({ where: { id }, data: { title } });
+    revalidatePath("/");
+    revalidatePath("/dashboard/skills");
+    return { success: true };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to update skill";
+    return { success: false, error: message };
+  }
+};
+
 export const deleteSkill = async (id: string) => {
   try {
     await prisma.skill.delete({ where: { id } });
